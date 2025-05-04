@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Fitness Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container">
+    <h2>AI BMI Tracker and Risk Predictor</h2>
+
+    <form method="POST">
+        <input name="name" placeholder="Name" required>
+        <input name="age" type="number" placeholder="Age" required>
+        <select name="gender" required>
+            <option value="">Select Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+        </select>
+        <select name="diet" required>
+            <option value="">Diet Preference</option>
+            <option>Veg</option>
+            <option>Non-Veg</option>
+        </select>
+        <input name="weight" type="number" step="0.1" placeholder="Weight (kg)" required>
+        <input name="height" type="number" step="0.1" placeholder="Height (cm)" required>
+        <button type="submit">Calculate</button>
+    </form>
+
+    {% if show_result %}
+    <div class="result">
+        <h3>Hello, {{ name }}!</h3>
+        <p>Your BMI: <strong>{{ bmi }}</strong> ({{ category }})</p>
+        <p>Health Tip: {{ suggestion }}</p>
+        <p><strong>ML Predicted Risk:</strong> {{ risk }}</p>
+
+        <canvas id="bmiChart" width="300" height="200"></canvas>
+        <script>
+            const bmiValue = {{ chart_data.bmi }};
+            const ctx = document.getElementById('bmiChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Your BMI'],
+                    datasets: [{
+                        label: 'BMI Value',
+                        data: [bmiValue],
+                        backgroundColor: ['#007bff']
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 40
+                        }
+                    }
+                }
+            });
+        </script>
+
+        <h4>Recommended {{ diet }} Diet Plan</h4>
+        <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; margin-top: 10px;">
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Breakfast</th>
+                    <th>Lunch</th>
+                    <th>Dinner</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for day, meals in meal_plan.items() %}
+                <tr>
+                    <td><strong>{{ day }}</strong></td>
+                    <td>{{ meals[0] }}</td>
+                    <td>{{ meals[1] }}</td>
+                    <td>{{ meals[2] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>
