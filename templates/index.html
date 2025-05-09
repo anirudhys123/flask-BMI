@@ -35,7 +35,7 @@
         <p>Health Tip: {{ suggestion }}</p>
         <p><strong>ML Predicted Risk:</strong> {{ risk }}</p>
 
-        <canvas id="bmiChart" width="300" height="200"></canvas>
+        <!-- <canvas id="bmiChart" width="300" height="200"></canvas> -->
         <script>
             const bmiValue = {{ chart_data.bmi }};
             const ctx = document.getElementById('bmiChart').getContext('2d');
