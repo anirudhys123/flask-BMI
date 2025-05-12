@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request
 import joblib
+import os
 
 app = Flask(__name__)
 
-# Load ML model and encoders
-model = joblib.load('risk_model.pkl')
-gender_encoder = joblib.load('gender_encoder.pkl')
-risk_encoder = joblib.load('risk_encoder.pkl')
+# --- Load ML Model and Encoders ---
+model = joblib.load(os.path.join("risk_model.pkl"))
+gender_encoder = joblib.load(os.path.join("gender_encoder.pkl"))
+risk_encoder = joblib.load(os.path.join("risk_encoder.pkl"))
 
 # --- BMI Calculator ---
 def calculate_bmi(weight, height_cm):
@@ -14,7 +15,7 @@ def calculate_bmi(weight, height_cm):
     bmi = weight / (height_m ** 2)
     return round(bmi, 2)
 
-# --- BMI Classification Logic ---
+# --- BMI Classification ---
 def classify_bmi(bmi):
     if bmi < 18.5:
         return "Underweight", "Gain weight with high-protein meals."
@@ -32,7 +33,7 @@ def predict_risk(age, gender, bmi):
     pred = model.predict(features)[0]
     return risk_encoder.inverse_transform([pred])[0]
 
-# --- Weekly Diet Plan Based on Age, Gender, Preference ---
+# --- Weekly Diet Plan ---
 def get_weekly_diet(age, gender, preference):
     if age < 30:
         group = "18-30"
@@ -197,5 +198,6 @@ def index():
         )
     return render_template("index.html", show_result=False)
 
-if __name__ == '__main__':
+# --- Entry Point ---
+if __name__ == "__main__":
     app.run(debug=True)
